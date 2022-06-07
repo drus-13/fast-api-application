@@ -1,0 +1,12 @@
+-r requirements.txt
+
+# testing requirements
+pytest>=6.2.3
+requests>=2.23.0
+pandas>=1.2.0
+
+# repo maintenance tooling
+black
+flake8>=3.9.0
+mypy
+isort
