@@ -5,6 +5,6 @@ RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip3 install -r requirements/requirements.txt
 EXPOSE 8501
-ENTRYPOINT ["streamlit", "run"] For local runsdock
-# ENTRYPOINT ["streamlit", "run", "--server.port $PORT"] # For deployment to Heroku
+# ENTRYPOINT ["streamlit", "run"] For local runsdock
+ENTRYPOINT ["bash", "run.sh"] # For deployment to Heroku
 CMD ["app/main.py"]
