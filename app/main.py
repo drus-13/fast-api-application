@@ -9,7 +9,6 @@ import tensorflow as tf
 import warnings
 import os
 
-
 model = tf.lite.Interpreter("static/model.tflite")
 model.allocate_tensors()
 
@@ -23,6 +22,7 @@ class_mapping = {0: 'Building',
                  4: 'Sea',
                  5: 'Street'}
 
+
 def model_predict(images_arr):
     predictions = [0] * len(images_arr)
 
@@ -30,18 +30,20 @@ def model_predict(images_arr):
         model.set_tensor(input_details[0]['index'], images_arr[i].reshape((1, 150, 150, 3)))
         model.invoke()
         predictions[i] = model.get_tensor(output_details[0]['index']).reshape((6,))
-    
+
     prediction_probabilities = np.array(predictions)
     argmaxs = np.argmax(prediction_probabilities, axis=1)
 
     return argmaxs
+
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 def resize(image):
-  return cv2.resize(image, (150, 150))
+    return cv2.resize(image, (150, 150))
+
 
 @app.post("/uploadfiles", response_class=HTMLResponse)
 async def create_upload_files(files: List[UploadFile] = File(...)):
@@ -49,8 +51,7 @@ async def create_upload_files(files: List[UploadFile] = File(...)):
     for file in files:
         f = await file.read()
         images.append(f)
-    
-    
+
     images = [np.frombuffer(img, np.uint8) for img in images]
     images = [cv2.imdecode(img, cv2.IMREAD_COLOR) for img in images]
     images_resized = [resize(img) for img in images]
@@ -61,7 +62,7 @@ async def create_upload_files(files: List[UploadFile] = File(...)):
     for image, name in zip(images_rgb, names):
         pillow_image = Image.fromarray(image)
         pillow_image.save('static/' + name)
-    
+
     image_paths = ['static/' + name for name in names]
 
     images_arr = np.array(images_rgb, dtype=np.float32)
@@ -76,11 +77,12 @@ async def create_upload_files(files: List[UploadFile] = File(...)):
 
     content = head_html + """
     <marquee width="525" behavior="alternate"><h1 style="color:red;font-family:Arial">Here's Our Predictions!</h1></marquee>
-    """ + table_html +'''<br><form method="post" action="/">
+    """ + table_html + '''<br><form method="post" action="/">
     <button type="submit">Home</button>
     </form>'''
 
     return content
+
 
 @app.post("/", response_class=HTMLResponse)
 @app.get("/", response_class=HTMLResponse)
@@ -90,7 +92,7 @@ async def main():
     <h3 style="font-family:Arial">We'll Try to Predict Which of These Categories They Are:</h3><br>
     """
 
-    original_paths = ['building_default.jpg', 'forest_default.jpg', 'glacier_default.jpg', 
+    original_paths = ['building_default.jpg', 'forest_default.jpg', 'glacier_default.jpg',
                       'mountain_default.jpg', 'sea_default.jpg', 'street_default.jpg']
 
     full_original_paths = ['static/original/' + x for x in original_paths]
@@ -98,7 +100,7 @@ async def main():
     display_names = ['Building', 'Forest', 'Glacier', 'Mountain', 'Sea', 'Street']
 
     column_labels = []
-    
+
     content = content + get_html_table(full_original_paths, display_names, column_labels)
 
     content = content + """
@@ -110,7 +112,7 @@ async def main():
     </form>
     </body>
     """
-    
+
     return content
 
 
@@ -122,16 +124,18 @@ head_html = """
 <center>
 """
 
+
 def get_html_table(image_paths, names, column_labels):
     s = '<table align="center">'
     if column_labels:
-        s += '<tr><th><h4 style="font-family:Arial">' + column_labels[0] + '</h4></th><th><h4 style="font-family:Arial">' + column_labels[1] + '</h4></th></tr>'
-    
+        s += '<tr><th><h4 style="font-family:Arial">' + column_labels[
+            0] + '</h4></th><th><h4 style="font-family:Arial">' + column_labels[1] + '</h4></th></tr>'
+
     for name, image_path in zip(names, image_paths):
         s += '<tr><td><img height="80" src="/' + image_path + '" ></td>'
         s += '<td style="text-align:center">' + name + '</td></tr>'
     s += '</table>'
-    
+
     return s
 
 
