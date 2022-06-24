@@ -135,9 +135,9 @@ def get_html_table(image_paths, names, column_labels):
     return s
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     # Use this for debugging purposes only
-    warnings.warn("Running in development mode. Do not run like this in production.")
-    import uvicorn
+    # warnings.warn("Running in development mode. Do not run like this in production.")
+    # import uvicorn
 
-    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="debug")
+    # uvicorn.run(app, host="127.0.0.1", port=8000, log_level="debug")
