@@ -42,7 +42,7 @@ wcwidth==0.2.5
 zipp==3.6.0
 pytest>=6.2.3
 requests>=2.23.0
-pandas>=1.2.0
+pandas
 black
 flake8>=3.9.0
 mypy
