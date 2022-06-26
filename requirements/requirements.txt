@@ -11,7 +11,7 @@ fastapi==0.70.1
 gunicorn==20.1.0
 h11==0.12.0
 idna==3.3
-importlib-metadata==4.10.0
+importlib-metadata
 ipykernel==6.6.0
 ipython==7.30.1
 jedi==0.18.1
