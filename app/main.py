@@ -51,6 +51,15 @@ async def create_upload_files(files: List[UploadFile] = File(...)):
     for file in files:
         f = await file.read()
         images.append(f)
+    
+    if len(images[0]) == 0:
+        content_without_img_err = head_html + """
+        <marquee width="525" behavior="alternate"><h1 style="color:red;font-family:Arial">Error! Please load img!</h1></marquee>
+        """ + '''<br><form method="post" action="/">
+        <button type="submit">Home</button>
+        </form>'''
+        return content_without_img_err
+        
 
     images = [np.frombuffer(img, np.uint8) for img in images]
     images = [cv2.imdecode(img, cv2.IMREAD_COLOR) for img in images]
@@ -137,3 +146,9 @@ def get_html_table(image_paths, names, column_labels):
     s += '</table>'
 
     return s
+
+if __name__ == "__main__":
+
+    import uvicorn
+    
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="debug")
