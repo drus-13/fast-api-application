@@ -1,31 +1,40 @@
+from urllib import response
 import numpy as np
 from fastapi.testclient import TestClient
 
-import random
+from app.main import app
 
-import json
+client = TestClient(app)
 
-def test_make_prediction(client: TestClient) -> None:
-    # # Given
-    # payload = {
-    #     # ensure pydantic plays well with np.nan
-    #     "inputs": test_data.replace({np.nan: None}).to_dict(orient="records")
-    # }
+def test_read_item():
+    response = client.get("/")
+    assert response.status_code == 200
 
-    # # When
-    # response = client.post(
-    #     "http://localhost:8001/api/v1/predict",
-    #     json=payload,
-    # )
+def test_read_item_bad_token():
+    response = client.get("/")
+    assert response.status_code == 400
 
+def test_read_inexistent_item():
+    response = client.get("/")
+    assert response.status_code == 404
 
-    print("test_make_prediction")
-
-    # # Then
-    # assert response.status_code == 200
-    # prediction_data = response.json()
-    # print(prediction_data)
-    # assert all(isinstance(x, int) for x in prediction_data["preds"])
-    # assert all((x == 1 or x == 0) for x in prediction_data["preds"])
-    # assert (np.array(prediction_data["probs"]) >= 0).all() and (np.array(prediction_data["probs"]) <= 1).all()
-    # assert prediction_data["errors"] is None
+# def test_content():
+#     response = client.get("/")
+#     content = """
+#         <head>
+#         <meta name="viewport" content="width=device-width, initial-scale=1"/>
+#         </head>
+#         <body style="background-color:powderblue;">
+#         <center>
+#             <marquee width="525" behavior="alternate"><h1 style="color:red;font-family:Arial">Please Upload Your Scenes!</h1></marquee>
+#             <h3 style="font-family:Arial">We'll Try to Predict Which of These Categories They Are:</h3><br>
+#             <table align="center"><tr><td><img height="80" src="/static/original/building_default.jpg" ></td><td style="text-align:center">Building</td></tr><tr><td><img height="80" src="/static/original/forest_default.jpg" ></td><td style="text-align:center">Forest</td></tr><tr><td><img height="80" src="/static/original/glacier_default.jpg" ></td><td style="text-align:center">Glacier</td></tr><tr><td><img height="80" src="/static/original/mountain_default.jpg" ></td><td style="text-align:center">Mountain</td></tr><tr><td><img height="80" src="/static/original/sea_default.jpg" ></td><td style="text-align:center">Sea</td></tr><tr><td><img height="80" src="/static/original/street_default.jpg" ></td><td style="text-align:center">Street</td></tr></table>
+#             <br/>
+#             <br/>
+#             <form  action="/uploadfiles" enctype="multipart/form-data" method="post">
+#             <input name="files" type="file" multiple>
+#             <input type="submit">
+#             </form>
+#             </body>
+#             """
+    
